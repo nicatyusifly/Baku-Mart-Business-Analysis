@@ -1,22 +1,21 @@
 # BakuMart: Satış və Müştəri Analizi (SQL)
 
-Pərakəndə satış datası üzərində **Oracle SQL** ilə yazılmış 18 biznes sorğusu və onların nəticələri. Layihədə satış dinamikası, müştəri riski, mənfəətlilik və kanal analizi aparılıb.
+Pərakəndə satış datası üzərində Oracle SQL ilə yazılmış 18 biznes sorğusu və onların nəticələri. Layihədə satış dinamikası, müştəri riski, mənfəətlilik və kanal analizi aparılıb.
 
-**Texnologiya:** Oracle SQL (Oracle FreeSQL) · `JOIN`, `CTE`, `CASE`, window funksiyalar (`RANK`, `LAG`, `ROW_NUMBER`), `NOT EXISTS`
+ · `JOIN`, `CTE`, `CASE`, window funksiyalar (`RANK`, `LAG`, `ROW_NUMBER`), `NOT EXISTS` istifadə olunub
 
-## Əsas tapıntılar
+ Əsas tapıntılar
 
-- **Artım qiymətdən gəlir.** 2025-də satış gəliri +1.3% artıb (421.5K → 426.8K AZN), sifariş sayı −4.1%, satılan ədəd −4.9% azalıb. Marja 19.75%-dən 23.4%-ə yüksəlib. Satış gəliri azalan yeganə kateqoriya Məişət texnikasıdır (−4.6%).
-- **Kanallar.** Mobil tətbiq satış gəlirinin 55.8%-ni verir, orta sifariş məbləği mağazadan 4.7 dəfə yüksəkdir. Vebsayt yeganə azalan kanaldır (gəlir −0.7%, sifariş −5.4%).
-- **Müştəri riski.** 7 müştəri (aktiv bazanın 19%-i) 120+ gündür sifariş vermir. 8 müştəri satış gəlirinin 50.4%-ni verir.
-- **Mənfəətlilik.** Elektronika satış gəlirinin 41.6%-ni, ümumi mənfəətin isə yalnız 29.2%-ni verir (marja 15.2%).
-- **Data keyfiyyəti.** Dekabrdakı −63% "düşüş" "Gözləmədə" sifarişlərdən qaynaqlanan artefaktdır. Ləğv edilmiş sifarişlər gözləmə müddətini 373 günə şişirdir (real: 4.6 gün). Dublikat müştəri qeydi də var.
+- Artım qiymətdən gəlir. 2025-də satış gəliri +1.3% artıb (421.5K → 426.8K AZN), sifariş sayı −4.1%, satılan ədəd −4.9% azalıb. Marja 19.75%-dən 23.4%-ə yüksəlib. Satış gəliri azalan yeganə kateqoriya Məişət texnikasıdır (−4.6%).
+- Kanallar. Mobil tətbiq satış gəlirinin 55.8%-ni verir, orta sifariş məbləği mağazadan 4.7 dəfə yüksəkdir. Vebsayt yeganə azalan kanaldır (gəlir −0.7%, sifariş −5.4%).
+- Müştəri riski. 7 müştəri (aktiv bazanın 19%-i) 120+ gündür sifariş vermir. 8 müştəri satış gəlirinin 50.4%-ni verir.
+- Mənfəətlilik. Elektronika satış gəlirinin 41.6%-ni, ümumi mənfəətin isə yalnız 29.2%-ni verir (marja 15.2%).
 
 Bütün nəticələr və şərhlər: [`results/bakumart_results.md`](results/bakumart_results.md)
 
-## Data
+Data
 
-Sintetik (təlim üçün hazırlanmış) pərakəndə satış datası, 01.01.2024 – 31.12.2025.
+Sintetik (layihə üçün hazırlanmış) pərakəndə satış datası, 01.01.2024 – 31.12.2025.
 
 | Cədvəl | Sətir | Təsvir |
 |--------|------:|--------|
@@ -27,7 +26,6 @@ Sintetik (təlim üçün hazırlanmış) pərakəndə satış datası, 01.01.202
 | `employees` | 20 | İşçilər (vəzifə, menecer, maaş) |
 | `departments` | 6 | Departamentlər |
 
-Datada bilərəkdən "çirkli" hallar var: dublikat müştəri, şəhər adlarının fərqli yazılışı, boş e-poçt/telefon, satılmamış məhsul, işçisi olmayan departament və churn müştərilər.
 
 **Hesablama düsturları:**
 - Net satış gəliri = `quantity * unit_price * (1 - discount)`
@@ -54,7 +52,6 @@ bakumart-sql-analysis/
 2. `data/bakumart_sql_dataset.sql` skriptini işlət. Sonda sətir sayları yoxlanılır: 6, 20, 40, 25, 600, 1 200.
 3. `sql/bakumart_queries.sql` faylındakı sorğuları ardıcıl işlət.
 
-Sorğular Oracle sintaksisindədir (`FETCH FIRST`, `DATE '2025-12-31'`, `TO_CHAR`). Başqa bazada kiçik dəyişikliklər lazım ola bilər.
 
 ## Sorğuların siyahısı
 
@@ -79,8 +76,4 @@ Sorğular Oracle sintaksisindədir (`FETCH FIRST`, `DATE '2025-12-31'`, `TO_CHAR
 | 17 | [Kanallar üzrə illik dəyişmə](results/bakumart_results.md#17-kanallar-üzrə-satış-gəlirinin-illik-dəyişməsi-2024--2025) | `LAG PARTITION BY` |
 | 18 | [Müştəri konsentrasiyası](results/bakumart_results.md#18-müştəri-konsentrasiyası) | `RANK`, `CASE` |
 
-## Qeydlər
 
-- **Status filtri.** "Tamamlandı" yazılan sorğularda yalnız tamamlanmış sifarişlər götürülür. 6, 7, 10, 11 və 12-ci sorğularda status filtri yoxdur.
-- **Fərziyyələr.** Nəticə faylında "fərziyyə" kimi qeyd olunan şərhlər datadan birbaşa çıxmır, əlavə yoxlama tələb edir.
-- **Sintetik data.** Nəticələr real bazar məlumatı deyil, təlim datası üzərində aparılmış analizdir.
