@@ -1,13 +1,14 @@
 # BakuMart – Biznes Analitik SQL Nəticələri
 
-Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes suallarına cavab verdim. Sorğular: [`sql/bakumart_queries.sql`](../sql/bakumart_queries.sql) · [← Layihənin ana səhifəsi](../README.md)
-
 **Data:** 6 cədvəl, 2024–2025 dövrü, 40 müştəri, 600 sifariş, 1 200 sifariş sətri.
+
 **Düstur:** Net məbləğ = `quantity * unit_price * (1 - discount)`. Bugünkü tarix: 31.12.2025.
+
 **Terminlər:** Satış gəliri = endirimdən sonrakı satış məbləği. Ümumi mənfəət = satış gəliri − maya dəyəri. Marja = ümumi mənfəət / satış gəliri.
+
 **Status:** 2, 5, 8 və 13–18-ci suallar yalnız "Tamamlandı" sifarişləri üzrədir. 6, 7, 10, 11 və 12-ci suallarda status filtri yoxdur.
 
-## Əsas tapıntılar
+## Əsas nəticələr
 
 | Mövzu | Tapıntı |
 |-------|---------|
@@ -44,17 +45,16 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 | 10 | Lalə Orucova | Bakı | 9 | 19 945.24 |
 
 **Nəticə:** İlk 8 müştəri hər biri 32–37 sifariş verib, 9–10-cu yerdəkilər cəmi 9–10. Bu 8 müştəri satış gəlirinin yarısını verir (18-ci suala bax).
-**Məlumat keyfiyyəti:** Toğrul Kərimov-un şəhəri `bakı` (kiçik hərflə) yazılıb, bu da şəhər üzrə qruplaşdırmanı pozur.
 
 ## 3. Heç vaxt sifariş verməmiş müştərilər
 
 | Müştəri | Qeydiyyat tarixi |
 |---------|------------------|
 | Leyla Orucova | 2025-11-20 |
-| Elvin Hüseynov (boşluqlu ad) | 2025-12-05 |
+| Elvin Hüseynov | 2025-12-05 |
 | Rövşən Vəliyev | 2025-12-18 |
 
-**Nəticə:** Üçü də son 6 həftədə qeydiyyatdan keçib, yəni hələ ilk sifariş vaxtı gəlməyib. Elvin Hüseynov ID 5 ilə eyni telefon və e-poçta malikdir, yəni **dublikat qeydiyyatdır**.
+**Nəticə:** Üçü də son 6 həftədə qeydiyyatdan keçib, yəni hələ ilk sifariş vaxtı gəlməyib.
 
 ## 4. Heç vaxt satılmamış məhsul
 
@@ -62,12 +62,12 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 |--------|-------:|------:|
 | Elektrik skuter E9 | 899 | 27.7% |
 
-**Nəticə:** 24 ay ərzində bir dəfə də satılmayıb. Marjası normaldır, ona görə problem qiymətdə deyil, görünürlükdə və ya stokdadır. Yoxlanmalıdır.
+**Nəticə:** 24 ay ərzində bir dəfə də satılmayıb. Marjası normaldır, fikrimcə problem qiymətdə deyil, görünürlükdə və ya stokdadır.
 
 ## 5. 2025 – aylar üzrə tamamlanmış sifariş və satış gəliri
 
 | Ay | Sifariş | Satış gəliri (AZN) |
-|---:|--------:|------------:|
+|---:|--------:|-------------------:|
 | 1 | 24 | 41 492 |
 | 2 | 23 | 37 075 |
 | 3 | 21 | 34 480 |
@@ -82,23 +82,25 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 | 12 | 15 | 15 569 |
 
 **Nəticə:** Ən güclü ay **sentyabr**, ən zəif tam ay **oktyabr**. Sifariş sayı aylar üzrə sabitdir (20–24), satış gəlirindəki fərq səbət dəyərindən gəlir. Dekabr az görünür, çünki 20–31 dekabr sifarişləri hələ tamamlanmayıb.
-*(Hər iki ili birlikdə hesablayanda ən güclü ay aprel, ən zəif ay oktyabr çıxır.)*
+
+(Hər iki ili birlikdə hesablayanda ən güclü ay aprel, ən zəif ay oktyabr çıxır.) apreldə satışın yüksək olmasının səbəblərindən biri  bahar , novruz kampaniyları ilə əlaqəli ola bilər, həmçinin həmin ayda sifariş sayının demək olar eyni qalmasi ama orta sifariş məbləğinin dəyişməsinin səbəbi həmin ayda bayram ilə əlaqədar olaraq qiyməti yüksək olan məhsullara endirim tətbiq edilməsi , kampaniyalar verilməsi ola bilər
 
 ## 6. Sifarişlərin məbləğə görə qrupları
 
 | Qrup | Sifariş sayı | Ümumi məbləğ (AZN) | Satış gəlirində pay |
-|------|-------------:|-------------------:|------------:|
+|------|-------------:|-------------------:|--------------------:|
 | Böyük (1500-dən çox) | 290 | 757 248 | 78.82% |
 | Orta (300–1500) | 259 | 194 540 | 20.25% |
 | Kiçik (300-dən az) | 51 | 8 899 | 0.93% |
 
 **Nəticə:** Sifarişlərin 48%-i ("Böyük") satış gəlirinin təxminən 79%-ni verir. Kiçik sifarişlər satış gəlirinin 1%-dən azını təşkil edir.
-**Biznes mənası:** Kiçik sifarişlərdə emal və çatdırılma xərci satış gəlirinə nisbətdə yüksək ola bilər. Minimum səbət həddi sınaqdan keçirilə bilər.
+
+böyük məbləğdə sifarişlər satış gəlirinin böyük bir hissəsini tutur və bu o deməkdirki  böyük sifarişlər verən müştərilərin itirilməsi gəlirdə ciddi azalmaya səbəb ola bilər (konsentrasiya yüksəkdir)
 
 ## 7. Hər kateqoriyada net satış gəlirinə görə top 3 məhsul
 
 | Kateqoriya | # | Məhsul | Satış gəliri (AZN) |
-|------------|--:|--------|------------:|
+|------------|--:|--------|-------------------:|
 | Elektronika | 1 | Noutbuk ProBook 14 | 113 593 |
 | | 2 | Noutbuk Student 15 | 92 447 |
 | | 3 | Smartfon Nova S24 256GB | 87 971 |
@@ -121,7 +123,7 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 ## 8. 2025 aylıq satış gəliri, əvvəlki ay, artım % və kumulyativ satış gəliri
 
 | Ay | Satış gəliri | Əvvəlki ay | Artım % | Kumulyativ |
-|---:|------:|-----------:|--------:|-----------:|
+|---:|-------------:|-----------:|--------:|-----------:|
 | 1 | 41 492 | | | 41 492 |
 | 2 | 37 075 | 41 492 | −10.64 | 78 567 |
 | 3 | 34 480 | 37 075 | −7.00 | 113 048 |
@@ -136,7 +138,8 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 | 12 | 15 569 | 42 270 | −63.17 | 426 802 |
 
 **Nəticə:** Fevral–martda azalma, aprelde sıçrayış (+20%), iyula qədər yenə azalma, sentyabrda yenidən sıçrayış (+26%). 2025-in ümumi satış gəliri 426 802 AZN-dir.
-**Dekabr haqqında:** −63% real çöküş deyil. Dekabrda 26 sifarişdən 9-u hələ "Gözləmədə"dir (~18.8K AZN). Onlar tamamlansa, dekabr satış gəliri təxminən 34K olardı (təxminən −19%). Bu, status filtrinin yaratdığı təsirdir.
+
+**Dekabr haqqında:** −63% real çöküş deyil. Dekabrda 26 sifarişdən 9-u hələ "Gözləmədə"dir (~18.8K AZN). Onlar tamamlansa, dekabr satış gəliri təxminən 34K olardı (təxminən −19%).
 
 ## 9. Hələ göndərilməmiş sifarişlər
 
@@ -154,7 +157,7 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 
 **Nəticə:** 9 sifariş hələ göndərilməyib. Orta gözləmə 4.6 gündür, ən uzunu 11 gün (sifariş 1217). Hamısı son 12 gündədir, yəni gecikmə problemi görünmür.
 
-**Qeyd:** Sorğuya yalnız `status = 'Gözləmədə'` olanları saldım. Göndərmə tarixi boş olan 35 sifariş də var, amma onlar ləğv edilib (bütün sifarişlərin 5.8%-i) və heç vaxt göndərilməyəcək. Onları saysaydım, "gözləmə" günü yanlış görünərdi (orta 373 gün).
+**Qeyd:** Sorğuya yalnız `status = 'Gözləmədə'` olanları saldım. Göndərmə tarixi boş olan 35 sifariş də var, amma onlar ləğv edilib (bütün sifarişlərin 5.8%-i) və heç vaxt göndərilməyəcək. Onları saysaydım,gözləm günü yanlış görünərdi (orta 373 gün).
 
 ## 10. "Risk altında" müştərilər (son 120 gün sifarişsiz)
 
@@ -174,7 +177,7 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 - 33 nömrəli müştəri istisna olmaqla hamısı Fərdi seqmentdəndir.
 - 7 müştərinin 5-i Bakıdan kənardadır (iqtisadi amil və ya çatdırılma problemi ola bilər, bu, mənim fərziyyəmdir).
 
-**Biznes təsiri:** Bu 7 müştəri aktiv bazanın 19%-idir. 2024-də 48.9K, 2025-də 35.6K AZN gətirib (−27%), ömürlük satış gəlirləri 84.5K AZN-dir (ümumi satış gəlirinin 8.8%-i). Geri qaytarma (win-back) kampaniyası məntiqlidir.
+**Biznes təsiri:** Bu 7 müştəri churn müştərilərdir və aktiv bazanın 19%-idir. 2024-də 48.9K, 2025-də 35.6K AZN gətirib . Bu müştərilərə özəl kampaniyalar verib geri gətirmək olar
 
 ## 11. Satış meneceri üzrə fərqli müştəri və sifariş sayı
 
@@ -222,7 +225,7 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 ### 14. 2024 vs 2025: kateqoriya üzrə müqayisə
 
 | Kateqoriya | Sifariş 2024 → 2025 | Dəyişmə | Satılan ədəd 2024 → 2025 | Dəyişmə | Satış gəliri 2024 → 2025 (AZN) | Dəyişmə |
-|------------|--------------------:|--------:|-------------------------:|--------:|------------------------:|--------:|
+|------------|--------------------:|--------:|-------------------------:|--------:|-------------------------------:|--------:|
 | Elektronika | 146 → 143 | −2.05% | 337 → 328 | −2.67% | 171 903 → 180 664 | **+5.10%** |
 | Ev və Mətbəx | 124 → 123 | −0.81% | 363 → 352 | −3.03% | 34 101 → 35 196 | **+3.21%** |
 | İdman və Hobbi | 122 → 119 | −2.46% | 250 → 231 | −7.60% | 82 138 → 83 798 | **+2.02%** |
@@ -239,7 +242,7 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 ### 15. Kateqoriya üzrə satış gəliri və ümumi mənfəət
 
 | Kateqoriya | Satış gəliri | Ümumi mənfəət | Marja | Mənfəətdə pay |
-|------------|------:|---------------:|------:|--------------:|
+|------------|-------------:|--------------:|------:|--------------:|
 | Məişət texnikası | 260 453 | 57 553 | 22.1% | 31.4% |
 | Elektronika | 352 567 | 53 457 | 15.2% | 29.2% |
 | İdman və Hobbi | 165 936 | 44 346 | 26.7% | 24.2% |
@@ -250,24 +253,24 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 
 ### 16. Kanallar
 
-| Kanal | Sifariş | Satış gəliri | Orta sifariş (AOV) |
-|-------|--------:|------:|-------------------:|
+| Kanal | Sifariş | Satış gəliri | Orta sifariş |
+|-------|--------:|-------------:|-------------:|
 | Mobil tətbiq | 176 | 472 982 | 2 687 |
 | Vebsayt | 179 | 273 992 | 1 531 |
 | Mağaza | 176 | 101 279 | 575 |
 
-**Nəticə:** Sifariş sayı kanallar arasında demək olar ki, bərabərdir, amma satış gəliri 4.7 dəfə fərqlənir. Mobil tətbiq sifarişlərində orta hesabla 3 məhsul sətri var, mağazada isə 1.
+**Nəticə:** Sifariş sayı kanallar arasında demək olar ki, bərabərdir, amma satış gəliri fərqlənir. ola bilərki müştərilər böyük məbləğli alışlarda daha çox mobil tətbiqə üstünlük verir
 
 ### 17. Kanallar üzrə satış gəlirinin illik dəyişməsi (2024 → 2025)
 
 | Kanal | 2024 satış gəliri | 2025 satış gəliri | Dəyişmə | Sifariş 2024 → 2025 | Orta sifariş 2024 → 2025 |
-|-------|-----------:|-----------:|--------:|--------------------:|-------------------------:|
+|-------|------------------:|------------------:|--------:|--------------------:|-------------------------:|
 | Mobil tətbiq | 233 852 | 239 131 | **+2.26%** | 89 → 87 (−2.2%) | 2 628 → 2 749 (+4.6%) |
 | Mağaza | 50 121 | 51 158 | **+2.07%** | 90 → 86 (−4.4%) | 557 → 595 (+6.8%) |
 | Vebsayt | 137 479 | 136 513 | **−0.70%** | 92 → 87 (−5.4%) | 1 494 → 1 569 (+5.0%) |
 
 **Nəticə:**
-- Mobil tətbiq və mağaza kiçik artım göstərir (təxminən +2%), vebsayt isə **yeganə azalan kanaldır** (−0.7%).
+- Mobil tətbiq və mağaza kiçik artım göstərir (təxminən +2%), vebsayt isə yeganə azalan kanaldır (−0.7%).
 - Hər üç kanalda sifariş sayı azalıb, satış gəliri isə orta sifariş məbləğinin artması (+4.6% – +6.8%) hesabına qorunub. Bu, ümumi mənzərə ilə üst-üstə düşür: artım qiymətdən gəlir.
 - Vebsaytda sifariş itkisi ən böyükdür (−5.4%). Vebsayt həm də ən zəif yeni müştəri cəlb edən kanaldır (12-ci sual, ilk alışın 18.9%-i). Bu kanala diqqət lazımdır.
 - Kanalların payı demək olar ki, dəyişməyib: mobil 55.5% → 56.0%, vebsayt 32.6% → 32.0%, mağaza 11.9% → 12.0%.
@@ -283,4 +286,3 @@ Oracle SQL (FreeSQL) ilə BakuMart satış datası üzərində biznes sualların
 1. **Churn:** 7 risk altındakı müştəri üçün geri qaytarma kampaniyası, xüsusilə regionlarda.
 2. **Konsentrasiya:** İlk 8 müştəridən asılılığı azaltmaq üçün yeni müştəri cəlb etmək.
 3. **Marja:** Elektronikada endirim siyasətinə baxmaq, Ev və Mətbəx üzrə əlavə satışı gücləndirmək.
-4. **Məlumat keyfiyyəti:** Dublikat müştəri (ID 5 və 39), şəhər yazılışı (`bakı`, `BAKI`, ` Bakı `).
